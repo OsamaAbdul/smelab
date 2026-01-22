@@ -11,21 +11,23 @@ import {
 } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import {
-  CheckSquare,
-  FileText,
-  Users,
-  TrendingUp,
-  ShieldCheck,
-  Rocket,
   ArrowRight,
   Clock,
-  Briefcase,
   CheckCircle2,
   Circle,
   Sparkles,
   Zap,
-  LayoutDashboard
+  LayoutDashboard,
+  Building2,
+  Compass,
+  Fingerprint,
+  Award,
+  Cpu,
+  Megaphone,
+  MessageSquare
 } from "lucide-react";
+
+
 import { toast } from "sonner";
 import Loader from "./Loader";
 import { updateProfileBusinessType } from "@/api/mutations";
@@ -260,23 +262,24 @@ const Home = () => {
   const recentActivities = assets?.map((a: any) => ({
     title: `Created new ${a.type}`,
     date: new Date(a.created_at).toLocaleDateString(),
-    icon: FileText
+    icon: Award
   })) || [];
+
 
 
   const quickStats = [
     {
       title: "Business Status",
       value: business?.stage || "Idea Stage",
-      icon: Briefcase,
+      icon: Building2,
       color: "text-blue-400",
       bg: "bg-blue-500/10",
       border: "border-blue-500/20"
     },
     {
       title: "Onboarding",
-      value: `${checklistProgress}%`,
-      icon: CheckSquare,
+      value: `${checklistProgress}% completed`,
+      icon: Compass,
       color: "text-emerald-400",
       bg: "bg-emerald-500/10",
       border: "border-emerald-500/20"
@@ -284,7 +287,7 @@ const Home = () => {
     {
       title: "Compliance",
       value: business?.registration_status === 'registered' ? "Verified" : "Pending",
-      icon: ShieldCheck,
+      icon: Fingerprint,
       color: "text-purple-400",
       bg: "bg-purple-500/10",
       border: "border-purple-500/20"
@@ -294,8 +297,8 @@ const Home = () => {
   const quickActions = [
     {
       title: "Business Registration",
-      desc: "Register with CAC easily",
-      icon: FileText,
+      desc: "Fast-track CAC approval",
+      icon: Award,
       path: "/dashboard/cac",
       color: "text-orange-400",
       bg: "bg-orange-500/10",
@@ -303,8 +306,8 @@ const Home = () => {
     },
     {
       title: "AI Tools",
-      desc: "Generate logos & plans",
-      icon: Rocket,
+      desc: "Generate logos & branding",
+      icon: Cpu,
       path: "/dashboard/ai-tools",
       color: "text-blue-400",
       bg: "bg-blue-500/10",
@@ -312,8 +315,8 @@ const Home = () => {
     },
     {
       title: "Marketing Hub",
-      desc: "Create flyers & ads",
-      icon: TrendingUp,
+      desc: "Create premium flyers & ads",
+      icon: Megaphone,
       path: "/dashboard/marketing",
       color: "text-pink-400",
       bg: "bg-pink-500/10",
@@ -321,14 +324,15 @@ const Home = () => {
     },
     {
       title: "Consult Expert",
-      desc: "Book a session",
-      icon: Users,
+      desc: "1-on-1 strategy session",
+      icon: MessageSquare,
       path: "/dashboard/consulting",
       color: "text-emerald-400",
       bg: "bg-emerald-500/10",
       borderColor: "border-emerald-500/20"
     },
   ];
+
 
   return (
     <div className="p-6 space-y-8 max-w-7xl mx-auto min-h-screen bg-zinc-950 text-zinc-100">
@@ -368,9 +372,13 @@ const Home = () => {
       {/* Journey Progress Stepper */}
       <div className="bg-zinc-900/50 backdrop-blur-sm rounded-2xl p-8 shadow-sm border border-zinc-800">
         <div className="flex justify-between items-center mb-10">
-          <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-yellow-400" /> Your Business Journey
+          <h2 className="text-xl font-bold text-white flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-yellow-400/10 border border-yellow-400/20">
+              <Sparkles className="h-5 w-5 text-yellow-400" />
+            </div>
+            Your Business Journey
           </h2>
+
           <span className="text-sm font-medium text-zinc-400">{checklistProgress}% Completed</span>
         </div>
 
@@ -456,9 +464,13 @@ const Home = () => {
 
           {/* Quick Actions Grid */}
           <div>
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <LayoutDashboard className="w-5 h-5 text-zinc-500" /> Quick Actions
+            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700">
+                <LayoutDashboard className="w-5 h-5 text-zinc-400" />
+              </div>
+              Quick Actions
             </h2>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {quickActions.map((action, index) => (
                 <motion.div
@@ -546,25 +558,26 @@ const Home = () => {
           </DialogHeader>
           <div className="grid grid-cols-2 gap-4 py-4">
             <div
-              className="cursor-pointer border border-dashed border-zinc-700 rounded-xl p-4 hover:border-orange-500 hover:bg-orange-500/10 transition text-center group"
+              className="cursor-pointer border border-dashed border-zinc-700 rounded-2xl p-6 hover:border-orange-500 hover:bg-orange-500/5 transition-all text-center group"
               onClick={() => handleChoice("new")}
             >
-              <div className="bg-orange-500/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                <Rocket className="text-orange-500 h-6 w-6" />
+              <div className="bg-orange-500/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg shadow-orange-500/5">
+                <Cpu className="text-orange-500 h-8 w-8" />
               </div>
-              <h3 className="font-semibold text-white">New Idea</h3>
-              <p className="text-xs text-zinc-500 mt-1">I want to start a business</p>
+              <h3 className="font-bold text-white text-lg">New Idea</h3>
+              <p className="text-sm text-zinc-500 mt-2">I want to launch a new venture</p>
             </div>
             <div
-              className="cursor-pointer border border-dashed border-zinc-700 rounded-xl p-4 hover:border-blue-500 hover:bg-blue-500/10 transition text-center group"
+              className="cursor-pointer border border-dashed border-zinc-700 rounded-2xl p-6 hover:border-blue-500 hover:bg-blue-500/5 transition-all text-center group"
               onClick={() => handleChoice("old")}
             >
-              <div className="bg-blue-500/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                <Briefcase className="text-blue-500 h-6 w-6" />
+              <div className="bg-blue-500/10 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300 shadow-lg shadow-blue-500/5">
+                <Building2 className="text-blue-500 h-8 w-8" />
               </div>
-              <h3 className="font-semibold text-white">Existing Business</h3>
-              <p className="text-xs text-zinc-500 mt-1">I have a registered business</p>
+              <h3 className="font-bold text-white text-lg">Existing Business</h3>
+              <p className="text-sm text-zinc-500 mt-2">I have a registered company</p>
             </div>
+
           </div>
         </DialogContent>
       </Dialog>

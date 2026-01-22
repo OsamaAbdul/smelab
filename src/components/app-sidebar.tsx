@@ -6,18 +6,11 @@ import {
   Image,
   Zap,
   ShieldCheck,
-  Settings,
-  Search,
-  Bell,
   MessageSquare
 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
 } from "@/components/ui/sidebar";
@@ -131,73 +124,69 @@ export function AppSidebar({ className, ...props }: React.ComponentProps<typeof 
           </div>
           {isMobile && (
             <div className="flex flex-col">
-              <span className="font-bold text-xl tracking-tight text-white">SME<span className="text-blue-500">LAB</span></span>
-              <span className="text-[10px] text-zinc-500 font-medium uppercase tracking-widest">Africa</span>
+              <span className="font-bold text-xl tracking-tight text-white leading-tight">SME<span className="text-blue-500">LAB</span></span>
+              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em]">Africa</span>
             </div>
           )}
         </div>
       </SidebarHeader>
 
-
-
       <SidebarContent className={cn("flex flex-col gap-2 px-2 scrollbar-none", isMobile ? "items-stretch" : "items-center")}>
-
-
         {/* Main Navigation */}
-        <nav className={cn("flex flex-col gap-1.5 w-full", isMobile ? "px-3" : "items-center")}>
-          {dynamicItems.map((item) => (
-            <TooltipProvider key={item.title}>
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger asChild>
-                  <NavLink
-                    to={item.disabled ? "#" : item.url}
-                    onClick={(e) => {
-                      if (item.disabled) {
-                        e.preventDefault();
-                      } else {
-                        handleLinkClick();
-                      }
-                    }}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center rounded-xl transition-all duration-300 relative group",
-                        isMobile ? "w-full h-12 px-4 flex-row justify-start gap-4" : "w-10 h-10 justify-center",
-                        isActive
-                          ? "bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]"
-                          : "text-zinc-400 hover:bg-white/10 hover:text-white",
-                        item.disabled && "opacity-30 cursor-not-allowed"
-                      )
+        <nav className={cn("flex flex-col gap-1.5 w-full", isMobile ? "items-start px-3" : "items-center")}>
+          {dynamicItems.map((item) => {
+            const navLink = (
+              <NavLink
+                to={item.disabled ? "#" : item.url}
+                onClick={(e) => {
+                  if (item.disabled) {
+                    e.preventDefault();
+                  } else {
+                    handleLinkClick();
+                  }
+                }}
+                className={({ isActive }) =>
+                  cn(
+                    "flex items-center rounded-xl transition-all duration-300 relative group",
+                    isMobile ? "w-full h-12 px-4 flex-row justify-start gap-4 mb-0.5" : "w-10 h-10 justify-center",
+                    isActive
+                      ? "bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+                      : "text-zinc-400 hover:bg-white/10 hover:text-white",
+                    item.disabled && "opacity-30 cursor-not-allowed"
+                  )
+                }
+              >
+                <item.icon className="w-5 h-5 shrink-0" />
+                {isMobile && <span className="font-bold text-sm tracking-wide whitespace-nowrap">{item.title}</span>}
+                {item.disabled && (
+                  <div className={cn("absolute", isMobile ? "top-1.5 right-1.5" : "top-0 right-0")}>
+                    <div className="w-1.5 h-1.5 bg-zinc-700 rounded-full border border-zinc-900" />
+                  </div>
+                )}
+              </NavLink>
+            );
 
+            if (isMobile) {
+              return <div key={item.title} className="w-full">{navLink}</div>;
+            }
 
-                    }
-                  >
-                    <item.icon className="w-5 h-5 shrink-0" />
-                    {isMobile && <span className="font-bold text-sm tracking-wide">{item.title}</span>}
-                    {item.disabled && (
-                      <div className="absolute top-1 right-1">
-                        <div className="w-1.5 h-1.5 bg-zinc-700 rounded-full border border-zinc-900" />
-                      </div>
-                    )}
-
-                  </NavLink>
-                </TooltipTrigger>
-                {!isMobile && (
+            return (
+              <TooltipProvider key={item.title}>
+                <Tooltip delayDuration={0}>
+                  <TooltipTrigger asChild>
+                    {navLink}
+                  </TooltipTrigger>
                   <TooltipContent side="right" className="bg-zinc-900 border-white/10 text-white ml-2">
                     {item.title} {item.disabled && "(Complete Setup)"}
                   </TooltipContent>
-                )}
-
-              </Tooltip>
-            </TooltipProvider>
-          ))}
+                </Tooltip>
+              </TooltipProvider>
+            );
+          })}
         </nav>
       </SidebarContent>
 
       <SidebarFooter className="py-6 flex flex-col items-center gap-4">
-
-
-
-
       </SidebarFooter>
     </Sidebar>
   );
