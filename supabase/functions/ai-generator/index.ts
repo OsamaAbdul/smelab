@@ -4,9 +4,10 @@ import { createClient } from "@supabase/supabase-js";
 declare const Deno: any;
 
 const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
-// Using the 2026 stable Gemini 2.5 Flash model
-const IMAGEN_MODEL = "gemini-2.5-flash-image";
+// Using the 2025 stable Gemini 2.0 Flash model
+const IMAGEN_MODEL = "gemini-2.0-flash-exp";
 const IMAGEN_URL = `https://generativelanguage.googleapis.com/v1beta/models/${IMAGEN_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+
 
 async function generateRealImage(prompt: string) {
   const response = await fetch(IMAGEN_URL, {
@@ -25,14 +26,23 @@ async function generateRealImage(prompt: string) {
   }
 
   const result = await response.json();
-  // For generateContent, image data is usually in candidates[0].content.parts[0].inlineData.data
-  const imageData = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+
+  // Try different paths for image data
+  let imageData = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
 
   if (!imageData) {
-    throw new Error("No image data found in response");
+    // Some versions might put it in a different part or candidate
+    const partWithImage = result.candidates?.[0]?.content?.parts?.find((p: any) => p.inlineData);
+    imageData = partWithImage?.inlineData?.data;
+  }
+
+  if (!imageData) {
+    console.error("Gemini Response Structure:", JSON.stringify(result, null, 2));
+    throw new Error("No image data found in response. The model may not have generated an image.");
   }
 
   return imageData;
+
 }
 
 Deno.serve(async (req: Request) => {
@@ -47,7 +57,12 @@ Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers });
 
   try {
-    const { type, businessType, businessName, description } = await req.json();
+    const body = await req.json();
+    const { type, businessType, businessName, description } = body;
+
+    if (!type || !businessName) {
+      return new Response(JSON.stringify({ error: "Missing required fields: type and businessName" }), { status: 400, headers });
+    }
 
     // 2. Auth Check
     const supabase = createClient(
@@ -55,9 +70,10 @@ Deno.serve(async (req: Request) => {
       Deno.env.get("SUPABASE_ANON_KEY")!
     );
     const authHeader = req.headers.get("Authorization");
-    const { data: { user } } = await supabase.auth.getUser(authHeader?.replace("Bearer ", "") || "");
+    const { data: { user }, error: authError } = await supabase.auth.getUser(authHeader?.replace("Bearer ", "") || "");
 
-    if (!user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers });
+    if (authError || !user) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers });
+
 
     // 3. Senior-Level Prompt Engineering
     const isLogo = type.toLowerCase() === 'logo';

@@ -106,7 +106,7 @@ function DashboardLayout() {
             </header>
 
             {/* Main Content Area */}
-            <main className="flex-1 w-full p-6 md:p-8">
+            <main className="flex-1 w-full p-4 md:p-8">
               <div className="max-w-7xl mx-auto animate-in fade-in duration-500">
                 <Outlet />
               </div>

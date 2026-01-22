@@ -244,11 +244,15 @@ const Home = () => {
   let checklistProgress = 0;
   let nextStep = null;
 
-  if (checklist && checklist.length > 0) {
-    const completed = checklist.filter((c: any) => c.status === 'completed').length;
+  if (journeyStages.length > 0) {
     const completedStages = journeyStages.filter(s => s.completed).length;
     checklistProgress = Math.round((completedStages / journeyStages.length) * 100);
 
+    // Ensure at least some progress if we have a business
+    if (business && checklistProgress === 0) checklistProgress = 10;
+  }
+
+  if (checklist && checklist.length > 0) {
     nextStep = checklist.find((c: any) => c.status !== 'completed');
   }
 
@@ -329,7 +333,7 @@ const Home = () => {
   return (
     <div className="p-6 space-y-8 max-w-7xl mx-auto min-h-screen bg-zinc-950 text-zinc-100">
       {/* Header Section with Dark Glassmorphism */}
-      <div className="relative overflow-hidden rounded-3xl bg-zinc-900 border border-zinc-800 p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-zinc-900 border border-zinc-800 p-6 md:p-10 shadow-2xl">
         <div className="absolute top-0 right-0 -mt-20 -mr-20 h-96 w-96 rounded-full bg-blue-500/10 blur-[100px] pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 -mb-20 -ml-20 h-96 w-96 rounded-full bg-purple-500/10 blur-[100px] pointer-events-none"></div>
 
@@ -344,10 +348,10 @@ const Home = () => {
                 {new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
               </span>
             </div>
-            <h1 className="text-4xl font-bold mb-2 text-white">
+            <h1 className="text-2xl md:text-4xl font-bold mb-2 text-white">
               Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">{profile?.first_name || "Entrepreneur"}</span>! 👋
             </h1>
-            <p className="text-zinc-400 max-w-xl text-lg">
+            <p className="text-zinc-400 max-w-xl text-base md:text-lg">
               Your business <span className="text-zinc-200 font-semibold">{business?.name || "Journey"}</span> is moving forward. Let's make progress today.
             </p>
           </motion.div>
@@ -370,7 +374,7 @@ const Home = () => {
           <span className="text-sm font-medium text-zinc-400">{checklistProgress}% Completed</span>
         </div>
 
-        <div className="relative flex items-center justify-between px-4 md:px-12">
+        <div className="relative flex items-center justify-between px-2 md:px-12">
           {/* Progress Bar Background */}
           <div className="absolute left-0 top-1/2 h-1 w-full -translate-y-1/2 bg-zinc-800 rounded-full -z-10"></div>
 
@@ -383,14 +387,14 @@ const Home = () => {
           {journeyStages.map((stage, index) => (
             <motion.div
               key={stage.id}
-              className="flex flex-col items-center gap-3 relative"
+              className="flex flex-col items-center gap-2 relative"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
             >
               <div
                 className={cn(
-                  "h-12 w-12 rounded-full flex items-center justify-center border-4 transition-all duration-500 z-10",
+                  "h-10 w-10 md:h-12 md:w-12 rounded-full flex items-center justify-center border-2 md:border-4 transition-all duration-500 z-10",
                   stage.completed
                     ? "bg-zinc-950 border-blue-500 text-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)]"
                     : index === 0 || journeyStages[index - 1].completed // Current step logic
@@ -398,10 +402,10 @@ const Home = () => {
                       : "bg-zinc-950 border-zinc-800 text-zinc-600"
                 )}
               >
-                {stage.completed ? <CheckCircle2 className="h-6 w-6" /> : <Circle className="h-6 w-6" />}
+                {stage.completed ? <CheckCircle2 className="h-5 w-5 md:h-6 md:w-6" /> : <Circle className="h-5 w-5 md:h-6 md:w-6" />}
               </div>
               <span className={cn(
-                "text-xs font-semibold uppercase tracking-wider transition-colors duration-300",
+                "hidden md:block text-[10px] md:text-xs font-semibold uppercase tracking-wider transition-colors duration-300",
                 stage.completed || index === 0 || journeyStages[index - 1].completed ? "text-zinc-200" : "text-zinc-600"
               )}>
                 {stage.label}
